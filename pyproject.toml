@@ -2,8 +2,8 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "pytest-mock>=3.10.0",
@@ -95,29 +95,6 @@ include = [
     "/README.md",
     "/LICENSE",
 ]
-
-# Ty configuration (modern type checker by Astral)
-[tool.ty]
-python-version = "3.9"
-strict = true
-warn-return-any = true
-warn-unused-configs = true
-disallow-untyped-defs = true
-disallow-incomplete-defs = true
-check-untyped-defs = true
-disallow-untyped-decorators = true
-no-implicit-optional = true
-warn-redundant-casts = true
-warn-unused-ignores = true
-warn-no-return = true
-warn-unreachable = true
-strict-equality = true
-show-error-codes = true
-
-[[tool.ty.overrides]]
-module = ["tests.*", "examples.*"]
-disallow-untyped-defs = false
-ignore-errors = true
 
 # Pytest configuration
 [tool.pytest.ini_options]
