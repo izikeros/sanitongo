@@ -79,7 +79,7 @@ type-check:
 
 security-check:
 	uv run bandit -r src/ -f json
-	uv run safety check --json
+	uv run safety scan --json
 
 pre-commit:
 	uv run pre-commit run --all-files
