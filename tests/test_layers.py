@@ -143,6 +143,7 @@ class TestPatternValidator:
 
     def test_custom_patterns(self) -> None:
         import re
+
         custom_patterns = {"bad_word": re.compile(r"badword", re.IGNORECASE)}
         validator = PatternValidator(custom_patterns=custom_patterns)
         query = {"text": "This contains a BADWORD"}
