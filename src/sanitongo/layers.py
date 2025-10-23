@@ -85,11 +85,16 @@ class TypeValidator:
 
 
 class SchemaEnforcer:
-    """Layer 2: Enforces schema-based field validation."""
+    """Layer 2: Enforces field schema and validation rules."""
 
-    def __init__(self, schema_validator: SchemaValidator | None = None) -> None:
+    def __init__(
+        self,
+        schema_validator: SchemaValidator | None = None,
+        fail_on_violation: bool = True,
+    ) -> None:
         """Initialize schema enforcer."""
         self.schema_validator = schema_validator
+        self.fail_on_violation = fail_on_violation
 
     def validate(self, query: dict[str, Any]) -> LayerResult:
         """Enforce schema rules on the query."""
@@ -103,7 +108,14 @@ class SchemaEnforcer:
             self.schema_validator.validate_query(query)
             return LayerResult(success=True, modified_query=query)
         except Exception as e:
-            raise ValidationError(f"Schema validation failed: {e}") from e
+            if self.fail_on_violation:
+                raise ValidationError(f"Schema validation failed: {e}") from e
+            else:
+                # In lenient mode, return success with warnings
+                warning_msg = f"Schema validation warning: {e}"
+                return LayerResult(
+                    success=True, modified_query=query, warnings=[warning_msg]
+                )
 
 
 class OperatorFilter:
@@ -250,11 +262,16 @@ class OperatorFilter:
 class PatternValidator:
     """Layer 4: Validates patterns in string values."""
 
-    def __init__(self, custom_patterns: dict[str, Pattern[str]] | None = None) -> None:
+    def __init__(
+        self,
+        custom_patterns: dict[str, Pattern[str]] | None = None,
+        fail_on_dangerous_patterns: bool = True,
+    ) -> None:
         """Initialize pattern validator."""
         self.dangerous_patterns = self._get_dangerous_patterns()
         if custom_patterns:
             self.dangerous_patterns.update(custom_patterns)
+        self.fail_on_dangerous_patterns = fail_on_dangerous_patterns
 
     def validate(self, query: dict[str, Any]) -> LayerResult:
         """Validate string patterns in the query."""
@@ -271,15 +288,20 @@ class PatternValidator:
                         f"Dangerous pattern '{pattern_name}' detected at '{path}'"
                     )
                     warnings.append(warning_msg)
-                    raise PatternError(
-                        f"Dangerous pattern detected: {pattern_name}",
-                        pattern_type=pattern_name,
-                        field_path=path,
-                        pattern_value=obj,
-                    )
+                    if self.fail_on_dangerous_patterns:
+                        raise PatternError(
+                            f"Dangerous pattern detected: {pattern_name}",
+                            pattern_type=pattern_name,
+                            field_path=path,
+                            pattern_value=obj,
+                        )
         elif isinstance(obj, dict):
             for key, value in obj.items():
                 current_path = f"{path}.{key}" if path else key
+                # Check the key itself for dangerous patterns, but skip MongoDB operators
+                if not key.startswith("$"):
+                    self._check_patterns(key, warnings, f"{current_path}#key")
+                # Check the value
                 self._check_patterns(value, warnings, current_path)
         elif isinstance(obj, list):
             for i, item in enumerate(obj):
