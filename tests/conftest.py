@@ -125,7 +125,7 @@ def complex_query() -> dict[str, Any]:
 
     # Add deeply nested structure
     nested = query
-    for i in range(15):  # Exceeds max_depth limit of 10
+    for _ in range(15):  # Exceeds max_depth limit of 10
         nested["nested"] = {}
         nested = nested["nested"]
     nested["final"] = "value"
@@ -165,7 +165,7 @@ COMPLEX_QUERIES = [
     # Deep nesting
     {"a": {"b": {"c": {"d": {"e": {"f": {"g": {"h": {"i": {"j": {"k": "deep"}}}}}}}}}}},
     # Many keys - create separately to avoid comprehension syntax issues
-    dict((f"key_{i}", f"value_{i}") for i in range(200)),
+    {f"key_{i}": f"value_{i}" for i in range(200)},
     # Large arrays
     {"large_array": list(range(2000))},
     # Long strings
