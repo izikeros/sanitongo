@@ -241,7 +241,8 @@ class MongoSanitizer:
         self.type_validator = TypeValidator(strict_mode=self.config.strict_types)
 
         self.schema_enforcer = SchemaEnforcer(
-            schema_validator=self.config.schema_validator
+            schema_validator=self.config.schema_validator,
+            fail_on_violation=self.config.fail_on_schema_violation,
         )
 
         self.operator_filter = OperatorFilter(
@@ -259,7 +260,10 @@ class MongoSanitizer:
                     name: re.compile(pattern)
                     for name, pattern in self.config.custom_dangerous_patterns.items()
                 }
-            self.pattern_validator = PatternValidator(custom_patterns=custom_patterns)
+            self.pattern_validator = PatternValidator(
+                custom_patterns=custom_patterns,
+                fail_on_dangerous_patterns=self.config.fail_on_dangerous_patterns,
+            )
         else:
             self.pattern_validator = None
 
@@ -378,7 +382,12 @@ def create_sanitizer(
     Returns:
         Configured MongoSanitizer instance
     """
-    config = SanitizerConfig(strict_types=strict_mode, **config_kwargs)
+    config = SanitizerConfig(
+        strict_types=strict_mode,
+        strict_operators=strict_mode,
+        fail_on_dangerous_patterns=strict_mode,
+        **config_kwargs,
+    )
 
     if schema:
         from .schema import FieldRule, FieldType, SchemaValidator

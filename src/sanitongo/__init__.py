@@ -23,27 +23,34 @@ from .layers import (
     SchemaEnforcer,
     TypeValidator,
 )
-from .sanitizer import MongoSanitizer, SanitizationReport, SanitizerConfig
+from .sanitizer import (
+    MongoSanitizer,
+    SanitizationReport,
+    SanitizerConfig,
+    create_sanitizer,
+)
 from .schema import FieldType, SchemaValidator
 
 __all__ = [
+    # Exceptions
+    "ComplexityError",
+    # Layers
+    "ComplexityLimiter",
+    # Schema
+    "FieldType",
     # Main classes
     "MongoSanitizer",
-    "SanitizerConfig",
-    "SanitizationReport",
-    # Exceptions
-    "SanitizerError",
-    "ValidationError",
-    "SchemaViolationError",
-    "ComplexityError",
-    "SecurityError",
-    # Schema
-    "SchemaValidator",
-    "FieldType",
-    # Layers
-    "TypeValidator",
-    "SchemaEnforcer",
     "OperatorFilter",
     "PatternValidator",
-    "ComplexityLimiter",
+    "SanitizationReport",
+    "SanitizerConfig",
+    "SanitizerError",
+    "SchemaEnforcer",
+    "SchemaValidator",
+    "SchemaViolationError",
+    "SecurityError",
+    "TypeValidator",
+    "ValidationError",
+    # Factory functions
+    "create_sanitizer",
 ]
