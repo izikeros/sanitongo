@@ -102,13 +102,11 @@ class FieldRule:
         """Validate string-specific constraints."""
         if self.min_length and len(value) < self.min_length:
             raise ValidationError(
-                f"Field '{field_path}' is too short. "
-                f"Minimum length: {self.min_length}"
+                f"Field '{field_path}' is too short. Minimum length: {self.min_length}"
             )
         if self.max_length and len(value) > self.max_length:
             raise ValidationError(
-                f"Field '{field_path}' is too long. "
-                f"Maximum length: {self.max_length}"
+                f"Field '{field_path}' is too long. Maximum length: {self.max_length}"
             )
         if self.pattern and not self.pattern.match(value):
             raise ValidationError(
