@@ -2,15 +2,15 @@
 
 > Modern MongoDB Query Sanitizer with Layered Security Protection
 
-[![CI/CD Pipeline](https://github.com/krystiansafjan/sanitongo/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/krystiansafjan/sanitongo/actions)
-[![codecov](https://codecov.io/gh/krystiansafjan/sanitongo/branch/main/graph/badge.svg)](https://codecov.io/gh/krystiansafjan/sanitongo)
+[![CI/CD Pipeline](https://github.com/izikeros/sanitongo/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/izikeros/sanitongo/actions)
+[![codecov](https://codecov.io/gh/izikeros/sanitongo/branch/main/graph/badge.svg)](https://codecov.io/gh/izikeros/sanitongo)
 [![PyPI version](https://badge.fury.io/py/sanitongo.svg)](https://badge.fury.io/py/sanitongo)
 [![Python versions](https://img.shields.io/pypi/pyversions/sanitongo.svg)](https://pypi.org/project/sanitongo/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Sanitongo is a comprehensive security library for sanitizing MongoDB queries with multiple layers of protection against NoSQL injection attacks, malicious queries, and complexity-based DoS attacks.
 
-## 🚀 Features
+## Features
 
 ### Five-Layer Protection System
 
@@ -39,7 +39,7 @@ Sanitongo is a comprehensive security library for sanitizing MongoDB queries wit
 - **Performance Focused** - Optimized for production use
 - **Extensive Testing** - 100% test coverage with security-focused test suites
 
-## 📦 Installation
+## Installation
 
 ```bash
 pip install sanitongo
@@ -51,7 +51,7 @@ For development with all dependencies:
 pip install sanitongo[dev]
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Basic Usage
 
@@ -248,7 +248,7 @@ Example configuration file (`sanitizer.json`):
 }
 ```
 
-## 🛡️ Security Features
+## Security Features
 
 ### Attack Prevention Examples
 
@@ -313,7 +313,7 @@ for attack in complex_attacks:
         print(f"✅ Complexity attack blocked: {type(e).__name__}")
 ```
 
-## 🧪 Testing
+## Testing
 
 Run the comprehensive test suite:
 
@@ -331,7 +331,7 @@ pytest tests/test_security.py -m security
 pytest --benchmark-only
 ```
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
@@ -339,7 +339,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone the repository
-git clone https://github.com/krystiansafjan/sanitongo.git
+git clone https://github.com/izikeros/sanitongo.git
 cd sanitongo
 
 # Install in development mode
@@ -358,7 +358,7 @@ make lint
 make format
 ```
 
-## 📊 Performance
+## Performance
 
 Sanitongo is designed for production use with minimal performance impact:
 
@@ -368,21 +368,24 @@ Sanitongo is designed for production use with minimal performance impact:
 - **Configurable**: Adjust security vs. performance trade-offs
 
 Benchmark results:
+
 - Simple queries: ~0.1ms processing time
 - Complex queries: ~1-5ms processing time  
 - Memory usage: <10MB for typical configurations
 
-## 🔒 Security Considerations
+## Security Considerations
 
 ### When to Use Strict Mode
 
 **Use strict mode when:**
+
 - Handling untrusted user input
 - Building public APIs
 - Processing queries from external sources
 - Maximum security is required
 
 **Use lenient mode when:**
+
 - Processing internal/trusted queries
 - You need detailed sanitization reports
 - Gradual security implementation
@@ -396,7 +399,7 @@ Benchmark results:
 4. **Regular updates** - Keep sanitongo updated for latest security fixes
 5. **Test thoroughly** - Include security tests in your test suite
 
-## 📚 API Reference
+## API Reference
 
 ### Main Classes
 
@@ -423,19 +426,15 @@ Benchmark results:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Thanks to the MongoDB security community for vulnerability research
 - Inspired by various NoSQL injection prevention techniques
 - Built with modern Python security best practices
 
-## 📞 Support
+## Support
 
-- **Documentation**: [GitHub Wiki](https://github.com/krystiansafjan/sanitongo/wiki)
-- **Issues**: [GitHub Issues](https://github.com/krystiansafjan/sanitongo/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/krystiansafjan/sanitongo/discussions)
-- **Security**: Report security issues privately to security@sanitongo.dev
-
----
-
-**Made with ❤️ for secure MongoDB applications**
+- **Documentation**: [GitHub Wiki](https://github.com/izikeros/sanitongo/wiki)
+- **Issues**: [GitHub Issues](https://github.com/izikeros/sanitongo/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/izikeros/sanitongo/discussions)
+- **Security**: Report security issues privately to <ksafjan@gmail.com>
