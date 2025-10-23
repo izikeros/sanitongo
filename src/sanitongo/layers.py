@@ -9,6 +9,8 @@ This module implements the five-layer protection approach:
 5. Complexity Limiting - Prevent DoS through query complexity
 """
 
+from __future__ import annotations
+
 import re
 from re import Pattern
 from typing import Any

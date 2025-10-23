@@ -5,6 +5,8 @@ This module provides schema-based validation to ensure queries only contain
 allowed fields and follow defined data types and constraints.
 """
 
+from __future__ import annotations
+
 import re
 from enum import Enum
 from re import Pattern
@@ -38,7 +40,7 @@ class FieldRule:
         min_length: int | None = None,
         max_length: int | None = None,
         pattern: str | Pattern[str] | None = None,
-        nested_schema: dict[str, "FieldRule"] | None = None,
+        nested_schema: dict[str, FieldRule] | None = None,
         array_item_type: FieldType | None = None,
         description: str | None = None,
     ) -> None:

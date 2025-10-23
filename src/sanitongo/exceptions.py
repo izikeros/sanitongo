@@ -5,6 +5,8 @@ This module defines all custom exceptions used throughout the MongoDB query
 sanitization process, providing specific error types for different failure modes.
 """
 
+from __future__ import annotations
+
 from typing import Any
 
 

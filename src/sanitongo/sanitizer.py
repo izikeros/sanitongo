@@ -5,6 +5,8 @@ This module provides the main sanitizer class that orchestrates all protection
 layers and provides comprehensive query sanitization with detailed reporting.
 """
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass, field
 from typing import Any
