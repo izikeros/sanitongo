@@ -6,9 +6,7 @@ This script demonstrates the fundamental features and usage patterns
 of the Sanitongo library for securing MongoDB queries.
 """
 
-from sanitongo import create_sanitizer, MongoSanitizer, SanitizerConfig
-from sanitongo.exceptions import SecurityError, ValidationError
-from sanitongo.schema import FieldRule, FieldType, SchemaValidator
+from sanitongo import MongoSanitizer, SanitizerConfig, create_sanitizer
 
 
 def basic_sanitization_example():
