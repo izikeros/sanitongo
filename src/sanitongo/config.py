@@ -150,8 +150,18 @@ class ConfigManager:
         """Convert SanitizerConfig to dictionary."""
         config_dict = {}
 
-        # Basic configuration
-        for field_name in [
+        self._add_basic_config_fields(config, config_dict)
+        self._add_schema_config(config, config_dict)
+        self._add_operator_config(config, config_dict)
+        self._add_pattern_config(config, config_dict)
+
+        return config_dict
+
+    def _add_basic_config_fields(
+        self, config: SanitizerConfig, config_dict: dict[str, Any]
+    ) -> None:
+        """Add basic configuration fields to dictionary."""
+        basic_fields = [
             "strict_types",
             "strict_operators",
             "enable_pattern_validation",
@@ -166,44 +176,60 @@ class ConfigManager:
             "fail_on_dangerous_operators",
             "fail_on_dangerous_patterns",
             "fail_on_complexity_exceeded",
-        ]:
+        ]
+
+        for field_name in basic_fields:
             if hasattr(config, field_name):
                 config_dict[field_name] = getattr(config, field_name)
 
-        # Schema configuration
-        if config.schema_validator:
-            schema_dict = {}
-            for field_name, field_rule in config.schema_validator.schema.items():
-                schema_dict[field_name] = {
-                    "type": field_rule.field_type.value,
-                    "required": field_rule.required,
-                }
-                if field_rule.allowed_values:
-                    schema_dict[field_name]["allowed_values"] = (
-                        field_rule.allowed_values
-                    )
-                if field_rule.min_length:
-                    schema_dict[field_name]["min_length"] = field_rule.min_length
-                if field_rule.max_length:
-                    schema_dict[field_name]["max_length"] = field_rule.max_length
-                if field_rule.pattern:
-                    schema_dict[field_name]["pattern"] = field_rule.pattern.pattern
-                if field_rule.description:
-                    schema_dict[field_name]["description"] = field_rule.description
+    def _add_schema_config(
+        self, config: SanitizerConfig, config_dict: dict[str, Any]
+    ) -> None:
+        """Add schema configuration to dictionary."""
+        if not config.schema_validator:
+            return
 
-            config_dict["schema"] = schema_dict
+        schema_dict = {}
+        for field_name, field_rule in config.schema_validator.schema.items():
+            field_config = {
+                "type": field_rule.field_type.value,
+                "required": field_rule.required,
+            }
 
-        # Operator lists
+            # Add optional field properties
+            optional_props = [
+                ("allowed_values", field_rule.allowed_values),
+                ("min_length", field_rule.min_length),
+                ("max_length", field_rule.max_length),
+                ("description", field_rule.description),
+            ]
+
+            for prop_name, prop_value in optional_props:
+                if prop_value:
+                    field_config[prop_name] = prop_value
+
+            if field_rule.pattern:
+                field_config["pattern"] = field_rule.pattern.pattern
+
+            schema_dict[field_name] = field_config
+
+        config_dict["schema"] = schema_dict
+
+    def _add_operator_config(
+        self, config: SanitizerConfig, config_dict: dict[str, Any]
+    ) -> None:
+        """Add operator configuration to dictionary."""
         if config.allowed_operators:
             config_dict["allowed_operators"] = list(config.allowed_operators)
         if config.dangerous_operators:
             config_dict["dangerous_operators"] = list(config.dangerous_operators)
 
-        # Custom patterns
+    def _add_pattern_config(
+        self, config: SanitizerConfig, config_dict: dict[str, Any]
+    ) -> None:
+        """Add pattern configuration to dictionary."""
         if config.custom_dangerous_patterns:
             config_dict["custom_dangerous_patterns"] = config.custom_dangerous_patterns
-
-        return config_dict
 
 
 def load_config_from_env() -> SanitizerConfig:
@@ -228,14 +254,14 @@ def load_config_from_env() -> SanitizerConfig:
         env_value = os.getenv(env_var)
         if env_value is not None:
             try:
-                if param_type == bool:
+                if param_type is bool:
                     config_params[param_name] = env_value.lower() in (
                         "true",
                         "1",
                         "yes",
                         "on",
                     )
-                elif param_type == int:
+                elif param_type is int:
                     config_params[param_name] = int(env_value)
                 else:
                     config_params[param_name] = env_value
@@ -291,7 +317,7 @@ def create_example_config() -> dict[str, Any]:
 
 def generate_config_file(output_path: str | Path) -> None:
     """Generate an example configuration file."""
-    config_manager = ConfigManager()
+    ConfigManager()
     example_config = create_example_config()
 
     output_path = Path(output_path)
