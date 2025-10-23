@@ -40,7 +40,7 @@ jobs:
     
     - name: Run type checking with ty
       run: |
-        uv run ty src/sanitongo
+        uv run ty check src/sanitongo
     
     - name: Run security checks with bandit
       run: |
