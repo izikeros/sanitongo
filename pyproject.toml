@@ -1,0 +1,168 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-watch>=4.2.0",
+    "pytest-benchmark>=4.0.0",
+    "ruff>=0.1.0",
+    "ty>=0.0.1a23", # Modern type checker by Astral
+    "pre-commit>=3.0.0",
+    "bandit[toml]>=1.7.5",
+    "safety>=2.3.0",
+    "build>=0.10.0",
+    "twine>=4.0.0",
+    "pip>=25.2",
+]
+
+[project]
+name = "sanitongo"
+version = "0.1.0"
+description = "Modern MongoDB query sanitizer with layered security protection"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Krystian Safjan", email = "ksafjan@gmail.com"}
+]
+maintainers = [
+    {name = "Krystian Safjan", email = "ksafjan@gmail.com"}
+]
+keywords = ["mongodb", "security", "sanitizer", "nosql", "injection"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Database",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-watch>=4.2.0",
+    "pytest-benchmark>=4.0.0",
+    "ruff>=0.1.0",
+    "pre-commit>=3.0.0",
+    "bandit[toml]>=1.7.5",
+    "safety>=2.3.0",
+    "build>=0.10.0",
+    "twine>=4.0.0",
+    "ty>=0.0.1a23",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.20.0",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pymongo>=4.0.0",  # For integration testing
+]
+
+[project.urls]
+Homepage = "https://github.com/izikeros/sanitongo"
+Documentation = "https://github.com/izikeros/sanitongo#readme"
+Repository = "https://github.com/izikeros/sanitongo"
+"Bug Tracker" = "https://github.com/izikeros/sanitongo/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sanitongo"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+]
+
+# Ty configuration (modern type checker by Astral)
+[tool.ty]
+python-version = "3.9"
+strict = true
+warn-return-any = true
+warn-unused-configs = true
+disallow-untyped-defs = true
+disallow-incomplete-defs = true
+check-untyped-defs = true
+disallow-untyped-decorators = true
+no-implicit-optional = true
+warn-redundant-casts = true
+warn-unused-ignores = true
+warn-no-return = true
+warn-unreachable = true
+strict-equality = true
+show-error-codes = true
+
+[[tool.ty.overrides]]
+module = ["tests.*", "examples.*"]
+disallow-untyped-defs = false
+ignore-errors = true
+
+# Pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "--strict-config",
+    "--strict-markers",
+    "--cov=src/sanitongo",
+    "--cov-branch",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "security: marks tests as security-focused tests",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+show_missing = true
+precision = 2
+
+[tool.coverage.html]
+directory = "htmlcov"
