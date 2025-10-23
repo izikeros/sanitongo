@@ -55,55 +55,78 @@ class FieldRule:
 
     def validate_value(self, value: Any, field_path: str) -> None:
         """Validate a value against this field rule."""
-        if value is None and not self.required:
+        self._validate_required(value, field_path)
+
+        if value is None:
             return
 
+        # Handle MongoDB operators - validate operator values instead of the operator object
+        if isinstance(value, dict) and self._is_mongo_operator_dict(value):
+            self._validate_mongo_operators(value, field_path)
+        else:
+            self._validate_type(value, field_path)
+            self._validate_allowed_values(value, field_path)
+            self._validate_by_type(value, field_path)
+
+    def _validate_required(self, value: Any, field_path: str) -> None:
+        """Validate required field constraint."""
         if value is None and self.required:
             raise ValidationError(f"Required field '{field_path}' is missing")
 
-        # Type validation
+    def _validate_type(self, value: Any, field_path: str) -> None:
+        """Validate value type."""
         if not self._check_type(value):
             raise ValidationError(
                 f"Field '{field_path}' has invalid type. "
                 f"Expected {self.field_type.value}, got {type(value).__name__}"
             )
 
-        # Value constraints
+    def _validate_allowed_values(self, value: Any, field_path: str) -> None:
+        """Validate value against allowed values constraint."""
         if self.allowed_values and value not in self.allowed_values:
             raise ValidationError(
                 f"Field '{field_path}' has invalid value. "
                 f"Must be one of: {self.allowed_values}"
             )
 
-        # String-specific validations
+    def _validate_by_type(self, value: Any, field_path: str) -> None:
+        """Validate value based on its field type."""
         if self.field_type == FieldType.STRING and isinstance(value, str):
-            if self.min_length and len(value) < self.min_length:
-                raise ValidationError(
-                    f"Field '{field_path}' is too short. "
-                    f"Minimum length: {self.min_length}"
-                )
-            if self.max_length and len(value) > self.max_length:
-                raise ValidationError(
-                    f"Field '{field_path}' is too long. "
-                    f"Maximum length: {self.max_length}"
-                )
-            if self.pattern and not self.pattern.match(value):
-                raise ValidationError(
-                    f"Field '{field_path}' does not match required pattern"
-                )
+            self._validate_string(value, field_path)
+        elif self.field_type == FieldType.ARRAY and isinstance(value, list):
+            self._validate_array(value, field_path)
+        elif self.field_type == FieldType.OBJECT and isinstance(value, dict):
+            self._validate_object(value, field_path)
 
-        # Array validation
-        if self.field_type == FieldType.ARRAY and isinstance(value, list):
-            if self.array_item_type:
-                for i, item in enumerate(value):
-                    item_rule = FieldRule(self.array_item_type)
-                    item_rule.validate_value(item, f"{field_path}[{i}]")
+    def _validate_string(self, value: str, field_path: str) -> None:
+        """Validate string-specific constraints."""
+        if self.min_length and len(value) < self.min_length:
+            raise ValidationError(
+                f"Field '{field_path}' is too short. "
+                f"Minimum length: {self.min_length}"
+            )
+        if self.max_length and len(value) > self.max_length:
+            raise ValidationError(
+                f"Field '{field_path}' is too long. "
+                f"Maximum length: {self.max_length}"
+            )
+        if self.pattern and not self.pattern.match(value):
+            raise ValidationError(
+                f"Field '{field_path}' does not match required pattern"
+            )
 
-        # Object validation
-        if self.field_type == FieldType.OBJECT and isinstance(value, dict):
-            if self.nested_schema:
-                schema_validator = SchemaValidator(self.nested_schema)
-                schema_validator.validate_query(value, field_path)
+    def _validate_array(self, value: list[Any], field_path: str) -> None:
+        """Validate array-specific constraints."""
+        if self.array_item_type:
+            for i, item in enumerate(value):
+                item_rule = FieldRule(self.array_item_type)
+                item_rule.validate_value(item, f"{field_path}[{i}]")
+
+    def _validate_object(self, value: dict[str, Any], field_path: str) -> None:
+        """Validate object-specific constraints."""
+        if self.nested_schema:
+            schema_validator = SchemaValidator(self.nested_schema)
+            schema_validator.validate_query(value, field_path)
 
     def _check_type(self, value: Any) -> bool:
         """Check if value matches the expected type."""
@@ -148,6 +171,76 @@ class FieldRule:
             )
             return bool(iso_pattern.match(value))
         return hasattr(value, "year")  # Duck typing for datetime-like objects
+
+    def _is_mongo_operator_dict(self, value: dict[str, Any]) -> bool:
+        """Check if a dictionary contains only MongoDB operators."""
+        return all(key.startswith("$") for key in value)
+
+    def _validate_mongo_operators(self, value: dict[str, Any], field_path: str) -> None:
+        """Validate MongoDB operator values against the field's expected type."""
+        for operator, operator_value in value.items():
+            self._validate_single_operator(operator, operator_value, field_path)
+
+    def _validate_single_operator(
+        self, operator: str, operator_value: Any, field_path: str
+    ) -> None:
+        """Validate a single MongoDB operator value."""
+        # For operators that should contain values of the field's type
+        if operator in {"$eq", "$ne", "$gt", "$gte", "$lt", "$lte"}:
+            self._validate_typed_operator(operator, operator_value, field_path)
+        # For operators that should contain arrays of the field's type
+        elif operator in {"$in", "$nin"}:
+            self._validate_array_operator(operator, operator_value, field_path)
+        # For regex operators
+        elif operator == "$regex":
+            self._validate_regex_operator(operator_value, field_path)
+        # For other operators, we'll be permissive for now
+        # This allows operators like $exists, $type, etc.
+
+    def _validate_typed_operator(
+        self, operator: str, operator_value: Any, field_path: str
+    ) -> None:
+        """Validate operators that should contain values of the field's type."""
+        if not self._check_type(operator_value):
+            raise ValidationError(
+                f"Field '{field_path}' operator '{operator}' has invalid type. "
+                f"Expected {self.field_type.value}, got {type(operator_value).__name__}"
+            )
+
+    def _validate_array_operator(
+        self, operator: str, operator_value: Any, field_path: str
+    ) -> None:
+        """Validate operators that should contain arrays of the field's type."""
+        if not isinstance(operator_value, list):
+            raise ValidationError(
+                f"Field '{field_path}' operator '{operator}' must be a list"
+            )
+        for item in operator_value:
+            # For array fields, check against array item type if specified
+            if self.field_type == FieldType.ARRAY and self.array_item_type:
+                item_rule = FieldRule(self.array_item_type)
+                if not item_rule._check_type(item):
+                    raise ValidationError(
+                        f"Field '{field_path}' operator '{operator}' contains invalid type. "
+                        f"Expected {self.array_item_type.value}, got {type(item).__name__}"
+                    )
+            else:
+                if not self._check_type(item):
+                    raise ValidationError(
+                        f"Field '{field_path}' operator '{operator}' contains invalid type. "
+                        f"Expected {self.field_type.value}, got {type(item).__name__}"
+                    )
+
+    def _validate_regex_operator(self, operator_value: Any, field_path: str) -> None:
+        """Validate regex operator value."""
+        if self.field_type != FieldType.STRING:
+            raise ValidationError(
+                f"Field '{field_path}' operator '$regex' can only be used with string fields"
+            )
+        if not isinstance(operator_value, str):
+            raise ValidationError(
+                f"Field '{field_path}' operator '$regex' must be a string"
+            )
 
 
 class SchemaValidator:
