@@ -145,3 +145,4 @@ Thumbs.db
 config/local.json
 logs/
 benchmark.json.idea/
+.idea/
