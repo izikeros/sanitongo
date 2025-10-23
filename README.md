@@ -37,7 +37,7 @@ Sanitongo is a comprehensive security library for sanitizing MongoDB queries wit
 - **Detailed Reporting** - Comprehensive sanitization reports with security insights
 - **Type Safety** - Full TypeScript-style type hints and validation
 - **Performance Focused** - Optimized for production use
-- **Extensive Testing** - 100% test coverage with security-focused test suites
+- **Extensive Testing** - Security-focused test suites
 
 ## Installation
 
