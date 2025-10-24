@@ -11,7 +11,7 @@ from typing import Any
 import pytest
 
 from sanitongo import create_sanitizer
-from sanitongo.exceptions import ComplexityError, SchemaViolationError, SecurityError
+from sanitongo.exceptions import ComplexityError, SecurityError, ValidationError
 
 pytest_plugins = []
 
@@ -144,7 +144,7 @@ class TestMongoDBIntegration:
         assert results[0]["name"] == "Alice"
 
         # This should fail - unknown field
-        with pytest.raises(SchemaViolationError):
+        with pytest.raises(ValidationError):
             invalid_query = {"unknown_field": "value"}
             sanitizer.sanitize_query(invalid_query)
 
