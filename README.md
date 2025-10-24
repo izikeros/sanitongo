@@ -48,7 +48,19 @@ pip install sanitongo
 For development with all dependencies:
 
 ```bash
-pip install sanitongo[dev]
+pip install "sanitongo[dev]"
+```
+
+For documentation building:
+
+```bash
+pip install "sanitongo[docs]"
+```
+
+For testing (includes MongoDB integration tests):
+
+```bash
+pip install "sanitongo[test]"
 ```
 
 ## Quick Start
@@ -112,9 +124,8 @@ print(f"Summary: {report.get_summary()}")
 
 ```python
 from sanitongo import create_sanitizer
-from sanitongo.schema import FieldType
 
-# Define your schema
+# Define your schema using simple field configs
 schema = {
     "_id": {"type": "objectid"},
     "name": {
@@ -145,7 +156,7 @@ valid_query = {
 
 result = sanitizer.sanitize_query(valid_query)  # ✅ Passes
 
-# Invalid query
+# Invalid query with schema violations
 invalid_query = {
     "name": "",  # Too short
     "email": "invalid-email",  # Wrong format
@@ -158,7 +169,7 @@ except Exception as e:
     print(f"Validation failed: {e}")
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Basic Configuration
 
@@ -202,50 +213,59 @@ config = SanitizerConfig(
 sanitizer = MongoSanitizer(config)
 ```
 
-### Configuration from File
+### Advanced Configuration
 
 ```python
-from sanitongo.config import ConfigManager
+from sanitongo import SanitizerConfig, MongoSanitizer
 
-# Load from JSON file
-manager = ConfigManager()
-config = manager.load_config("config/sanitizer.json")
-sanitizer = MongoSanitizer(config)
+# Create detailed configuration
+config = SanitizerConfig(
+    strict_types=True,
+    strict_operators=False,  # Remove dangerous operators instead of failing
+    enable_pattern_validation=True,
+    max_depth=15,
+    max_keys=200,
+    enable_logging=True,
+    log_level="WARNING"
+)
 
-# Load from environment variables
-config = load_config_from_env()
 sanitizer = MongoSanitizer(config)
 ```
 
-Example configuration file (`sanitizer.json`):
+### Schema-Based Configuration
 
-```json
-{
-  "strict_types": true,
-  "strict_operators": false,
-  "enable_pattern_validation": true,
-  "max_depth": 15,
-  "max_keys": 200,
-  "enable_logging": true,
-  "log_level": "WARNING",
-  "schema": {
-    "_id": {"type": "objectid"},
-    "name": {
-      "type": "string",
-      "required": true,
-      "min_length": 1,
-      "max_length": 100
-    },
-    "email": {
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
-    }
-  },
-  "custom_dangerous_patterns": {
-    "suspicious_eval": "eval\\s*\\(",
-    "script_injection": "<script[^>]*>.*?</script>"
-  }
+```python
+from sanitongo import SanitizerConfig, MongoSanitizer
+from sanitongo.schema import SchemaValidator, FieldRule, FieldType
+
+# Define schema rules
+schema_rules = {
+    "_id": FieldRule(FieldType.OBJECT_ID),
+    "name": FieldRule(
+        FieldType.STRING,
+        required=True,
+        min_length=1,
+        max_length=100
+    ),
+    "email": FieldRule(
+        FieldType.STRING,
+        pattern=r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    ),
+    "age": FieldRule(FieldType.INTEGER),
+    "active": FieldRule(FieldType.BOOLEAN)
 }
+
+# Create schema validator
+schema_validator = SchemaValidator(schema_rules)
+
+# Create configuration with schema
+config = SanitizerConfig(
+    schema_validator=schema_validator,
+    strict_types=True,
+    enable_logging=True
+)
+
+sanitizer = MongoSanitizer(config)
 ```
 
 ## Security Features
@@ -358,6 +378,27 @@ make lint
 make format
 ```
 
+## Implementation Status
+
+### Fully Implemented
+- **Core Protection Layers**: All five security layers are implemented and tested
+- **Basic API**: `MongoSanitizer`, `SanitizerConfig`, and `create_sanitizer` 
+- **Schema Validation**: Field types, constraints, and validation rules
+- **Security Features**: NoSQL injection, XSS, pattern detection, complexity limits
+- **Error Handling**: Comprehensive exception hierarchy
+- **Testing**: 83 tests with 69% code coverage
+
+### Partially Implemented  
+- **Configuration Management**: Basic config loading exists but needs more testing
+- **Advanced Schema Types**: Some field types may need refinement
+- **Documentation**: API docs could be expanded
+
+### Planned Features
+- **JSON/YAML Configuration**: File-based configuration loading
+- **Environment Variables**: Configuration from environment  
+- **Advanced Patterns**: More sophisticated threat detection
+- **Performance Optimizations**: Further speed improvements
+
 ## Performance
 
 Sanitongo is designed for production use with minimal performance impact:
@@ -367,10 +408,11 @@ Sanitongo is designed for production use with minimal performance impact:
 - **Scalable**: Handles complex queries efficiently
 - **Configurable**: Adjust security vs. performance trade-offs
 
-Benchmark results:
+Benchmark results (from automated tests):
 
-- Simple queries: ~0.1ms processing time
-- Complex queries: ~1-5ms processing time  
+- Simple queries: ~45-80μs processing time
+- Complex queries: ~100-200μs processing time  
+- Schema validation: ~38-45μs processing time
 - Memory usage: <10MB for typical configurations
 
 ## Security Considerations
@@ -417,12 +459,17 @@ Benchmark results:
 - **`ComplexityError`** - Query complexity limits exceeded
 - **`PatternError`** - Dangerous patterns detected
 
-### Utility Functions
+### Factory Functions
 
 - **`create_sanitizer()`** - Create sanitizer with common configurations
-- **`load_config_from_env()`** - Load configuration from environment variables
 
-## 📄 License
+### Schema Components
+
+- **`FieldType`** - Enum of supported field types (STRING, INTEGER, BOOLEAN, etc.)
+- **`FieldRule`** - Validation rules for individual fields  
+- **`SchemaValidator`** - Schema-based field validation
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
@@ -437,4 +484,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: [GitHub Wiki](https://github.com/izikeros/sanitongo/wiki)
 - **Issues**: [GitHub Issues](https://github.com/izikeros/sanitongo/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/izikeros/sanitongo/discussions)
-- **Security**: Report security issues privately to <ksafjan@gmail.com>
+- **Security**: Report security issues privately to ksafjan@gmail.com
