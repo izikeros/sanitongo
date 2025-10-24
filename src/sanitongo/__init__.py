@@ -5,7 +5,7 @@ A comprehensive security library for sanitizing MongoDB queries with multiple
 layers of protection against NoSQL injection attacks and malicious queries.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Krystian Safjan"
 __email__ = "ksafjan@gmail.com"
 
