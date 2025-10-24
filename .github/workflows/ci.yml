@@ -210,3 +210,12 @@ jobs:
         output-file-path: benchmark.json
         github-token: ${{ secrets.GITHUB_TOKEN }}
         auto-push: true
+        name: "Performance Benchmarks"
+        gh-pages-branch: gh-pages
+        benchmark-data-dir-path: dev/bench
+        skip-fetch-gh-pages: true
+        comment-always: false
+        summary-always: false
+        save-data-file: true
+        alert-threshold: 200%
+        fail-on-alert: false
