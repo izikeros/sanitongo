@@ -11,6 +11,9 @@ on:
 env:
   PYTHON_VERSION: "3.11"
 
+permissions:
+  contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -184,7 +187,11 @@ jobs:
     needs: test
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -203,17 +210,33 @@ jobs:
           uv run pytest tests/ -k "benchmark" --benchmark-only --benchmark-json=benchmark.json
 
       - name: Set Git identity
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "actions@github.com"
 
       - name: Commit benchmark results
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git add benchmark.json
           git commit -m "Save benchmark results" || echo "No changes to commit"
 
-      - name: Switch to gh-pages
-        run: git switch gh-pages
+      - name: Ensure gh-pages is available locally
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git fetch origin --prune
+          # If origin/gh-pages exists, create/update local branch to match it
+          if git ls-remote --exit-code --heads origin gh-pages; then
+            git fetch origin gh-pages:gh-pages
+            git checkout gh-pages
+            git reset --hard origin/gh-pages
+          else
+            # Create an initial orphan gh-pages branch and push it
+            git checkout --orphan gh-pages
+            git reset --hard
+            git commit --allow-empty -m "Initialize gh-pages"
+            git push origin gh-pages
+          fi
 
       - name: Store benchmark results
         uses: benchmark-action/github-action-benchmark@v1
