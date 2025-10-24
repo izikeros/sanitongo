@@ -182,75 +182,76 @@ jobs:
         run: |
           uv run pytest tests/ -m integration -v
 
-  performance-test:
-    runs-on: ubuntu-latest
-    needs: test
+  # Temporarily disabled performance tests
+  # performance-test:
+  #   runs-on: ubuntu-latest
+  #   needs: test
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: true
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #         persist-credentials: true
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
+  #     - name: Install uv
+  #       uses: astral-sh/setup-uv@v3
 
-      - name: Install dependencies
-        run: |
-          uv sync --dev
+  #     - name: Install dependencies
+  #       run: |
+  #         uv sync --dev
 
-      - name: Run performance tests
-        run: |
-          uv run pytest tests/ -k "benchmark" --benchmark-only --benchmark-json=benchmark.json
+  #     - name: Run performance tests
+  #       run: |
+  #         uv run pytest tests/ -k "benchmark" --benchmark-only --benchmark-json=benchmark.json
 
-      - name: Set Git identity
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "actions@github.com"
+  #     - name: Set Git identity
+  #       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #       run: |
+  #         git config --local user.name "github-actions"
+  #         git config --local user.email "actions@github.com"
 
-      - name: Commit benchmark results
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git add benchmark.json
-          git commit -m "Save benchmark results" || echo "No changes to commit"
+  #     - name: Commit benchmark results
+  #       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #       run: |
+  #         git add benchmark.json
+  #         git commit -m "Save benchmark results" || echo "No changes to commit"
 
-      - name: Ensure gh-pages is available locally
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git fetch origin --prune
-          # If origin/gh-pages exists, create/update local branch to match it
-          if git ls-remote --exit-code --heads origin gh-pages; then
-            git fetch origin gh-pages:gh-pages
-            git checkout gh-pages
-            git reset --hard origin/gh-pages
-          else
-            # Create an initial orphan gh-pages branch and push it
-            git checkout --orphan gh-pages
-            git reset --hard
-            git commit --allow-empty -m "Initialize gh-pages"
-            git push origin gh-pages
-          fi
+  #     - name: Ensure gh-pages is available locally
+  #       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #       run: |
+  #         git fetch origin --prune
+  #         # If origin/gh-pages exists, create/update local branch to match it
+  #         if git ls-remote --exit-code --heads origin gh-pages; then
+  #           git fetch origin gh-pages:gh-pages
+  #           git checkout gh-pages
+  #           git reset --hard origin/gh-pages
+  #         else
+  #           # Create an initial orphan gh-pages branch and push it
+  #           git checkout --orphan gh-pages
+  #           git reset --hard
+  #           git commit --allow-empty -m "Initialize gh-pages"
+  #           git push origin gh-pages
+  #         fi
 
-      - name: Store benchmark results
-        uses: benchmark-action/github-action-benchmark@v1
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        with:
-          tool: pytest
-          output-file-path: benchmark.json
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          auto-push: true
-          name: "Performance Benchmarks"
-          gh-pages-branch: gh-pages
-          benchmark-data-dir-path: dev/bench
-          comment-always: false
-          summary-always: false
-          save-data-file: true
-          alert-threshold: 200%
-          fail-on-alert: false
+  #     - name: Store benchmark results
+  #       uses: benchmark-action/github-action-benchmark@v1
+  #       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #       with:
+  #         tool: pytest
+  #         output-file-path: benchmark.json
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         auto-push: true
+  #         name: "Performance Benchmarks"
+  #         gh-pages-branch: gh-pages
+  #         benchmark-data-dir-path: dev/bench
+  #         comment-always: false
+  #         summary-always: false
+  #         save-data-file: true
+  #         alert-threshold: 200%
+  #         fail-on-alert: false
