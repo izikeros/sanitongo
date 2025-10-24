@@ -171,3 +171,76 @@ COMPLEX_QUERIES = [
     # Long strings
     {"long_string": "x" * 20000},
 ]
+
+
+# Benchmark configuration fixture
+@pytest.fixture(scope="session", autouse=True)
+def configure_benchmark_output():
+    """Configure benchmark output based on environment variables."""
+    import atexit
+    import json
+    import os
+    import statistics
+    from pathlib import Path
+
+    def customize_benchmark_json():
+        """Post-process benchmark JSON file."""
+        benchmark_file = Path("benchmark.json")
+        if not benchmark_file.exists():
+            return
+
+        # Check environment
+        is_ci = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
+        verbose_benchmark = os.getenv("VERBOSE_BENCHMARK", "").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
+
+        # Load the JSON file
+        with open(benchmark_file) as f:
+            data = json.load(f)
+
+        # Remove machine info unless running on CI
+        if not is_ci and "machine_info" in data:
+            del data["machine_info"]
+
+        # If not verbose, keep only descriptive statistics
+        if not verbose_benchmark and "benchmarks" in data:
+            for benchmark in data["benchmarks"]:
+                if "stats" in benchmark and "data" in benchmark["stats"]:
+                    # Get raw times from the stats data
+                    raw_times = sorted(benchmark["stats"]["data"])
+                    n = len(raw_times)
+
+                    if n > 0:
+                        # Calculate percentiles
+                        def percentile(data_list, p, count):
+                            """Calculate percentile of data."""
+                            k = (count - 1) * p / 100
+                            f = int(k)
+                            c = k - f
+                            if f == count - 1:
+                                return data_list[f]
+                            return data_list[f] * (1 - c) + data_list[f + 1] * c
+
+                        # Replace with descriptive statistics only
+                        benchmark["stats"] = {
+                            "min": min(raw_times),
+                            "percentile_5": percentile(raw_times, 5, n),
+                            "mean": statistics.mean(raw_times),
+                            "median": statistics.median(raw_times),
+                            "percentile_95": percentile(raw_times, 95, n),
+                            "max": max(raw_times),
+                            "stddev": statistics.stdev(raw_times) if n > 1 else 0,
+                            "rounds": n,
+                        }
+
+        # Write back the modified JSON
+        with open(benchmark_file, "w") as f:
+            json.dump(data, f, indent=2)
+
+    # Register cleanup function
+    atexit.register(customize_benchmark_json)
+
+    yield

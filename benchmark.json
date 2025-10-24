@@ -1,0 +1,410 @@
+{
+  "commit_info": {
+    "id": "3c8cfdf14d33febdc8f72e9a37fee75a3553f285",
+    "time": "2025-10-24T04:40:00+02:00",
+    "author_time": "2025-10-24T04:40:00+02:00",
+    "dirty": true,
+    "project": "sanitongo",
+    "branch": "main"
+  },
+  "benchmarks": [
+    {
+      "group": null,
+      "name": "test_benchmark_simple_query_sanitization",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_simple_query_sanitization",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 4.270899808034301e-05,
+        "percentile_5": 4.395801806822419e-05,
+        "mean": 5.32145135112228e-05,
+        "median": 4.999997327104211e-05,
+        "percentile_95": 6.252491148188712e-05,
+        "max": 0.0016823330079205334,
+        "stddev": 4.5985756750249474e-05,
+        "rounds": 3075
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_complex_query_sanitization",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_complex_query_sanitization",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 6.64170365780592e-05,
+        "percentile_5": 6.900000153109431e-05,
+        "mean": 7.87352340669306e-05,
+        "median": 7.599999662488699e-05,
+        "percentile_95": 9.233300806954503e-05,
+        "max": 0.0003595410380512476,
+        "stddev": 1.628505069115856e-05,
+        "rounds": 3871
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_query_with_removals_lenient",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_query_with_removals_lenient",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 8.029199671000242e-05,
+        "percentile_5": 8.299999171867967e-05,
+        "mean": 9.638917485768641e-05,
+        "median": 9.44999628700316e-05,
+        "percentile_95": 0.00011127518955618144,
+        "max": 0.0015629580011591315,
+        "stddev": 2.7556013444528733e-05,
+        "rounds": 4889
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_array_processing",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_array_processing",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 6.59169745631516e-05,
+        "percentile_5": 6.891699740663171e-05,
+        "mean": 7.761127837604133e-05,
+        "median": 7.55410292185843e-05,
+        "percentile_95": 8.987501496449113e-05,
+        "max": 0.0012556249857880175,
+        "stddev": 2.1626404435405253e-05,
+        "rounds": 5091
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_nested_object_processing",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_nested_object_processing",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 4.766695201396942e-05,
+        "percentile_5": 4.933401942253113e-05,
+        "mean": 5.827988881256586e-05,
+        "median": 5.6229502661153674e-05,
+        "percentile_95": 6.933399708941579e-05,
+        "max": 0.002112540998496115,
+        "stddev": 3.0572245649708214e-05,
+        "rounds": 5688
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_large_query_processing",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_large_query_processing",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.0004072909941896796,
+        "percentile_5": 0.00041418134933337566,
+        "mean": 0.00043902166886548383,
+        "median": 0.00043235401972196996,
+        "percentile_95": 0.00048332852020394057,
+        "max": 0.0008797910413704813,
+        "stddev": 3.046142399369277e-05,
+        "rounds": 1588
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_schema_validation_performance",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_schema_validation_performance",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 3.724999260157347e-05,
+        "percentile_5": 3.8624973967671394e-05,
+        "mean": 4.410802667952283e-05,
+        "median": 4.229097976349294e-05,
+        "percentile_95": 5.324999801814556e-05,
+        "max": 0.00030150002567097545,
+        "stddev": 1.0746449703001607e-05,
+        "rounds": 6780
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_query_size_scaling[10]",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_query_size_scaling[10]",
+      "params": {
+        "query_size": 10
+      },
+      "param": "10",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 6.391695933416486e-05,
+        "percentile_5": 6.612500874325633e-05,
+        "mean": 7.911562194188889e-05,
+        "median": 7.308297790586948e-05,
+        "percentile_95": 9.140648762695491e-05,
+        "max": 0.005027459003031254,
+        "stddev": 0.00010395347835464572,
+        "rounds": 4806
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_query_size_scaling[25]",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_query_size_scaling[25]",
+      "params": {
+        "query_size": 25
+      },
+      "param": "25",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.00010220904368907213,
+        "percentile_5": 0.00010612502228468657,
+        "mean": 0.00011649027225224769,
+        "median": 0.00011374999303370714,
+        "percentile_95": 0.00013208301970735192,
+        "max": 0.0010343749891035259,
+        "stddev": 2.0520941819241966e-05,
+        "rounds": 4166
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_query_size_scaling[50]",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_query_size_scaling[50]",
+      "params": {
+        "query_size": 50
+      },
+      "param": "50",
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.0001650420017540455,
+        "percentile_5": 0.00017070829053409398,
+        "mean": 0.0001842985560278849,
+        "median": 0.00018029200145974755,
+        "percentile_95": 0.00020741700427606702,
+        "max": 0.00047099997755140066,
+        "stddev": 1.909902499493585e-05,
+        "rounds": 3227
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_pattern_validation_performance",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_pattern_validation_performance",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 7.333303801715374e-05,
+        "percentile_5": 7.587502477690578e-05,
+        "mean": 8.853527721641157e-05,
+        "median": 8.266698569059372e-05,
+        "percentile_95": 0.00010183302219957113,
+        "max": 0.007781583000905812,
+        "stddev": 0.00013182946931993087,
+        "rounds": 3480
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_type_validation_performance",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerPerformance::test_benchmark_type_validation_performance",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 6.095797289162874e-05,
+        "percentile_5": 6.34589814580977e-05,
+        "mean": 7.52688684760839e-05,
+        "median": 7.06670107319951e-05,
+        "percentile_95": 8.837705245241524e-05,
+        "max": 0.005340500036254525,
+        "stddev": 8.456534619411502e-05,
+        "rounds": 5980
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_memory_usage_large_query",
+      "fullname": "tests/test_benchmarks.py::TestSanitizerMemoryUsage::test_benchmark_memory_usage_large_query",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 0.0014359999913722277,
+        "percentile_5": 0.001458833587821573,
+        "mean": 0.0015655573391809296,
+        "median": 0.0015565829817205667,
+        "percentile_95": 0.0017209170036949217,
+        "max": 0.002173124987166375,
+        "stddev": 8.051653010348132e-05,
+        "rounds": 585
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_baseline_performance",
+      "fullname": "tests/test_benchmarks.py::TestPerformanceRegression::test_benchmark_baseline_performance",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 4.815166990738362e-05,
+        "percentile_5": 4.8887335928156977e-05,
+        "mean": 5.216458602808416e-05,
+        "median": 5.229000002145767e-05,
+        "percentile_95": 5.477875401265919e-05,
+        "max": 5.511416995432228e-05,
+        "stddev": 2.576358116932026e-06,
+        "rounds": 5
+      }
+    },
+    {
+      "group": null,
+      "name": "test_benchmark_worst_case_performance",
+      "fullname": "tests/test_benchmarks.py::TestPerformanceRegression::test_benchmark_worst_case_performance",
+      "params": null,
+      "param": null,
+      "extra_info": {},
+      "options": {
+        "disable_gc": false,
+        "timer": "perf_counter",
+        "min_rounds": 5,
+        "max_time": 1.0,
+        "min_time": 5e-06,
+        "warmup": false
+      },
+      "stats": {
+        "min": 4.616699879989028e-05,
+        "percentile_5": 4.8457994125783443e-05,
+        "mean": 5.976876700020053e-05,
+        "median": 5.545897874981165e-05,
+        "percentile_95": 7.630840409547085e-05,
+        "max": 0.004047500027809292,
+        "stddev": 6.078812443353008e-05,
+        "rounds": 4977
+      }
+    }
+  ],
+  "datetime": "2025-10-24T02:59:15.237608+00:00",
+  "version": "5.1.0"
+}
