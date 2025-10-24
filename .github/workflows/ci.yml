@@ -137,11 +137,6 @@ jobs:
           MONGO_INITDB_ROOT_PASSWORD: password
         ports:
           - 27017:27017
-        options: >-
-          --health-cmd "mongosh --eval 'db.runCommand({ping: 1})'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     
     steps:
     - uses: actions/checkout@v4
@@ -161,10 +156,22 @@ jobs:
     
     - name: Wait for MongoDB
       run: |
-        until mongosh --host localhost:27017 --eval "print('MongoDB is ready')"; do
-          echo "Waiting for MongoDB..."
-          sleep 2
-        done
+        uv run python -c "
+        import time
+        import pymongo
+        
+        for i in range(30):
+            try:
+                client = pymongo.MongoClient('mongodb://admin:password@localhost:27017/', serverSelectionTimeoutMS=2000)
+                client.admin.command('ping')
+                print('MongoDB is ready!')
+                break
+            except Exception as e:
+                print(f'Waiting for MongoDB... (attempt {i+1}/30)')
+                time.sleep(2)
+        else:
+            raise Exception('MongoDB failed to start after 60 seconds')
+        "
     
     - name: Run integration tests
       env:
