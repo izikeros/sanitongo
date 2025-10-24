@@ -7,10 +7,11 @@ layers of protection against NoSQL injection attacks and malicious queries.
 
 __version__ = "0.1.0"
 __author__ = "Krystian Safjan"
-__email__ = "krystian.safjan@example.com"
+__email__ = "ksafjan@gmail.com"
 
 from .exceptions import (
     ComplexityError,
+    PatternError,
     SanitizerError,
     SchemaViolationError,
     SecurityError,
@@ -41,6 +42,7 @@ __all__ = [
     # Main classes
     "MongoSanitizer",
     "OperatorFilter",
+    "PatternError",
     "PatternValidator",
     "SanitizationReport",
     "SanitizerConfig",
