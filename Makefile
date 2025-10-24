@@ -31,6 +31,13 @@ help:
 	@echo "  make publish          Publish package to PyPI"
 	@echo "  make docs             Generate documentation"
 	@echo ""
+	@echo "Release Management:"
+	@echo "  make release-patch    Bump patch version and prepare release"
+	@echo "  make release-minor    Bump minor version and prepare release"
+	@echo "  make release-major    Bump major version and prepare release"
+	@echo "  make update-changelog Generate/update changelog with git-cliff"
+	@echo "  make show-version     Show current version"
+	@echo ""
 	@echo "Docker:"
 	@echo "  make docker-build     Build Docker image"
 	@echo "  make docker-test      Run tests in Docker"
@@ -149,13 +156,44 @@ profile:
 
 # Release helpers
 version-patch:
-	uv run bump2version patch
+	uv run bump-my-version bump patch
 
 version-minor:
-	uv run bump2version minor
+	uv run bump-my-version bump minor
 
 version-major:
-	uv run bump2version major
+	uv run bump-my-version bump major
+
+# Release targets
+release-patch: clean test-cov security-check lint
+	uv run bump-my-version bump patch
+	$(MAKE) update-changelog
+	git add -A
+	git commit -m "chore(release): bump version to $$(uv run bump-my-version show current_version)"
+	git tag "v$$(uv run bump-my-version show current_version)"
+	@echo "Release prepared! Push with: git push origin main --tags"
+
+release-minor: clean test-cov security-check lint
+	uv run bump-my-version bump minor
+	$(MAKE) update-changelog
+	git add -A
+	git commit -m "chore(release): bump version to $$(uv run bump-my-version show current_version)"
+	git tag "v$$(uv run bump-my-version show current_version)"
+	@echo "Release prepared! Push with: git push origin main --tags"
+
+release-major: clean test-cov security-check lint
+	uv run bump-my-version bump major
+	$(MAKE) update-changelog
+	git add -A
+	git commit -m "chore(release): bump version to $$(uv run bump-my-version show current_version)"
+	git tag "v$$(uv run bump-my-version show current_version)"
+	@echo "Release prepared! Push with: git push origin main --tags"
+
+update-changelog:
+	uv run git-cliff --output CHANGELOG.md
+
+show-version:
+	@uv run bump-my-version show current_version
 
 # Environment info
 env-info:
