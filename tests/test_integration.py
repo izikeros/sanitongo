@@ -69,7 +69,7 @@ class TestMongoDBIntegration:
         # Clean up after test
         collection.drop()
 
-    def test_sanitizer_with_mongodb_connection(self, mongodb_client):
+    def test_sanitizer_with_mongodb_connection(self, mongodb_client) -> None:
         """Test that sanitizer works with MongoDB connection."""
         sanitizer = create_sanitizer(strict_mode=True)
 
@@ -113,7 +113,7 @@ class TestMongoDBIntegration:
             with pytest.raises(SecurityError):
                 sanitizer.sanitize_query(dangerous_query)
 
-    def test_query_complexity_limits(self, test_collection):
+    def test_query_complexity_limits(self, test_collection) -> None:
         """Test query complexity limits work with MongoDB."""
         sanitizer = create_sanitizer(strict_mode=True, max_depth=2)
 
@@ -125,7 +125,7 @@ class TestMongoDBIntegration:
         with pytest.raises(ComplexityError):
             sanitizer.sanitize_query(deep_query)
 
-    def test_field_filtering_integration(self, test_collection):
+    def test_field_filtering_integration(self, test_collection) -> None:
         """Test field filtering with actual MongoDB queries."""
         # Define allowed fields schema
         schema = {
@@ -150,7 +150,7 @@ class TestMongoDBIntegration:
 
 
 @pytest.mark.integration
-def test_mongodb_availability():
+def test_mongodb_availability() -> None:
     """Basic test to verify MongoDB is available for integration tests."""
     if not PYMONGO_AVAILABLE:
         pytest.skip("pymongo not available")

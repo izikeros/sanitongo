@@ -183,7 +183,7 @@ def configure_benchmark_output():
     import statistics
     from pathlib import Path
 
-    def customize_benchmark_json():
+    def customize_benchmark_json() -> None:
         """Post-process benchmark JSON file."""
         benchmark_file = Path("benchmark.json")
         if not benchmark_file.exists():
@@ -215,7 +215,7 @@ def configure_benchmark_output():
 
                     if n > 0:
                         # Calculate percentiles
-                        def percentile(data_list, p, count):
+                        def percentile(data_list, p: int, count: int):
                             """Calculate percentile of data."""
                             k = (count - 1) * p / 100
                             f = int(k)
