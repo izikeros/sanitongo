@@ -2309,6 +2309,9 @@ dev = [
     { name = "twine" },
     { name = "ty" },
 ]
+test = [
+    { name = "pymongo" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -2352,6 +2355,7 @@ dev = [
     { name = "twine", specifier = ">=4.0.0" },
     { name = "ty", specifier = ">=0.0.1a23" },
 ]
+test = [{ name = "pymongo", specifier = ">=4.15.3" }]
 
 [[package]]
 name = "secretstorage"

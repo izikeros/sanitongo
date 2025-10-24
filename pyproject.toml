@@ -18,6 +18,9 @@ dev = [
     "twine>=4.0.0",
     "pip>=25.2",
 ]
+test = [
+    "pymongo>=4.15.3",
+]
 
 [project]
 name = "sanitongo"
