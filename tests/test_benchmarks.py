@@ -5,11 +5,10 @@ These tests measure the performance characteristics of the sanitizer
 under various workloads and query complexities.
 """
 
-from sanitongo.sanitizer import SanitizationReport
-from sanitongo.sanitizer import MongoSanitizer
 import pytest
 
 from sanitongo import create_sanitizer
+from sanitongo.sanitizer import MongoSanitizer, SanitizationReport
 
 
 class TestSanitizerPerformance:
@@ -53,7 +52,9 @@ class TestSanitizerPerformance:
         assert "user" in result
         assert "$and" in result
 
-    def test_benchmark_query_with_removals_lenient(self, benchmark, lenient_sanitizer) -> None:
+    def test_benchmark_query_with_removals_lenient(
+        self, benchmark, lenient_sanitizer
+    ) -> None:
         """Benchmark sanitization that removes dangerous elements."""
         dangerous_query = {
             "name": "John",  # Safe
@@ -161,7 +162,9 @@ class TestSanitizerPerformance:
 
     def test_benchmark_pattern_validation_performance(self, benchmark) -> None:
         """Benchmark pattern validation performance."""
-        sanitizer: MongoSanitizer = create_sanitizer(strict_mode=False)  # Use lenient mode
+        sanitizer: MongoSanitizer = create_sanitizer(
+            strict_mode=False
+        )  # Use lenient mode
 
         # Query with various string patterns that will be checked
         query = {
