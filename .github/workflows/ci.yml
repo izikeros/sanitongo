@@ -213,7 +213,6 @@ jobs:
         name: "Performance Benchmarks"
         gh-pages-branch: gh-pages
         benchmark-data-dir-path: dev/bench
-        skip-fetch-gh-pages: true
         comment-always: false
         summary-always: false
         save-data-file: true
