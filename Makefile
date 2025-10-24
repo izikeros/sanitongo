@@ -75,7 +75,7 @@ format:
 	uv run ruff check --fix src/ tests/
 
 type-check:
-	uv run ty src/sanitongo
+	uv run ty check src/sanitongo
 
 security-check:
 	uv run bandit -r src/ -f json
