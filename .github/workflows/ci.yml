@@ -201,7 +201,15 @@ jobs:
     - name: Run performance tests
       run: |
         uv run pytest tests/ -k "benchmark" --benchmark-only --benchmark-json=benchmark.json
-    
+
+    - name: Commit benchmark results
+      run: |
+        git add benchmark.json
+        git commit -m "Save benchmark results" || echo "No changes to commit"
+
+    - name: Switch to gh-pages
+      run: git switch gh-pages
+
     - name: Store benchmark results
       uses: benchmark-action/github-action-benchmark@v1
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
