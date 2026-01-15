@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.1.2] - 2026-01-15
 
 ### 🚀 Features
 
@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 
 - *(release)* Bump version to 0.1.1
 - Update uv.lock
+- *(release)* Bump version to 0.1.2
 
 ## [0.1.1] - 2025-10-24
 
