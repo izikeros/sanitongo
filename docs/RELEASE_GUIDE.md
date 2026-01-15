@@ -10,8 +10,28 @@ Before starting the release process, ensure you have:
 - [ ] All tests passing locally and in CI
 - [ ] Clean working directory (no uncommitted changes)
 - [ ] Admin access to the GitHub repository
-- [ ] PyPI credentials configured for publishing
+- [ ] **PyPI API token added to GitHub Secrets** (see [PyPI Token Setup](#pypi-token-setup))
 - [ ] All required tools installed (see [Dependencies](#dependencies))
+
+### PyPI Token Setup
+
+**This is a one-time setup required before your first automated release.**
+
+1. Generate a PyPI API token:
+   - Go to https://pypi.org/manage/account/token/
+   - Create a new API token with scope for your project (or use account-wide token)
+   - Copy the token (starts with `pypi-`)
+
+2. Add token to GitHub repository secrets:
+   - Go to your repository settings: `https://github.com/izikeros/sanitongo/settings/secrets/actions`
+   - Click "New repository secret"
+   - Name: `PYPI_API_TOKEN`
+   - Value: Paste your PyPI token
+   - Click "Add secret"
+
+3. (Optional) For testing releases, add Test PyPI token:
+   - Generate token at https://test.pypi.org/manage/account/token/
+   - Add as `TEST_PYPI_API_TOKEN` in GitHub secrets
 
 ## Dependencies
 
@@ -64,13 +84,35 @@ make release-minor
 make release-major
 ```
 
+**What happens when you run `make release-*`:**
+
+All three release targets (`release-patch`, `release-minor`, `release-major`) execute the same steps:
+
+1. **Clean build artifacts** - Removes old build files
+2. **Run tests with coverage** - Ensures all tests pass before release
+3. **Security check** - Validates no security vulnerabilities exist
+4. **Lint check** - Ensures code meets style requirements
+5. **Bump version** - Updates version in `pyproject.toml` and `src/sanitongo/__init__.py`
+6. **Update changelog** - Generates changelog using `git-cliff`
+7. **Stage all changes** - Runs `git add -A`
+8. **Commit changes** - Creates commit with message `chore(release): bump version to X.Y.Z`
+9. **Create git tag** - Tags the commit as `vX.Y.Z`
+10. **Display push instructions** - Reminds you to push with tags
+
+After the make command completes successfully, you still need to manually push:
+
+```bash
+git push origin main --tags
+```
+
 ### 3. Update Changelog
 
 Generate and review the changelog:
 
 ```bash
-# Generate changelog
+# Generate changelog using git-cliff
 make update-changelog
+# This runs: uv run git-cliff --output CHANGELOG.md
 
 # Review the generated CHANGELOG.md
 git diff CHANGELOG.md
