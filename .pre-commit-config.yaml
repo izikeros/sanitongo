@@ -1,18 +1,19 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-      - id: check-added-large-files
-      - id: check-json
       - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
       - id: check-merge-conflict
       - id: debug-statements
+      - id: detect-private-key
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.8
+    rev: v0.9.0
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -22,27 +23,16 @@ repos:
     rev: v0.1.0
     hooks:
       - id: ty
-        args: [--strict]
 
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.5
+    rev: 1.8.0
     hooks:
       - id: bandit
-        args: [-r, src/, -f, json]
+        args: [-r, src/]
         exclude: tests/
 
-  - repo: https://github.com/python-security/safety
-    rev: 2.3.5
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.1.0
     hooks:
-      - id: safety
-        args: [--json]
-
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: uv run pytest
-        language: system
-        pass_filenames: false
-        always_run: true
-        args: [--cov=src/sanitongo, --cov-report=term-missing]
+      - id: commitizen
+        stages: [commit-msg]

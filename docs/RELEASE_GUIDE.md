@@ -83,7 +83,7 @@ git diff CHANGELOG.md
 git add -A
 git commit -m "chore(release): bump version to $(bump-my-version show current_version)"
 
-# Create and push tag
+# Create and push tag (this is optional, adding tag is handled by bump-my-version if configured)
 git tag "v$(bump-my-version show current_version)"
 git push origin main --tags
 ```
@@ -91,6 +91,9 @@ git push origin main --tags
 ### 5. GitHub Release
 
 Create a GitHub release:
+
+> NOTE: To create release, "workflow" scope may be required. To request it, run:
+> `gh auth refresh -h github.com -s workflow`
 
 ```bash
 # Option 1: Using GitHub CLI (if installed)
