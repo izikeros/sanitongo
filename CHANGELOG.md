@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### 🚀 Features
+
+- Add initial .safety-project.ini configuration file
+
+### 🐛 Bug Fixes
+
+- Remove duplicate entry for .idea/ in .gitignore
+- Remove duplicate entry for .idea/ in .gitignore
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* Bump version to 0.1.1
+- Update uv.lock
+
 ## [0.1.1] - 2025-10-24
 
 ### ⚙️ Miscellaneous Tasks
