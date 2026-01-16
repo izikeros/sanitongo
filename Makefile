@@ -22,7 +22,7 @@ help:
 	@echo "  make lint             Run all linters (ruff)"
 	@echo "  make format           Format code with ruff"
 	@echo "  make type-check       Run type checking with mypy"
-	@echo "  make security-check   Run security checks (bandit, safety)"
+	@echo "  make security-check   Run security checks (bandit, pip-audit)"
 	@echo "  make pre-commit       Run all pre-commit hooks"
 	@echo ""
 	@echo "Development:"
