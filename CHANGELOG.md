@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.1.3] - 2026-01-16
 
 ### 🐛 Bug Fixes
 
@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 
 - Update changelog for version 0.1.2 release
 - Update uv.lock
+- *(release)* Bump version to 0.1.3
 
 ## [0.1.2] - 2026-01-15
 
