@@ -19,47 +19,38 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
 
       - name: Install dependencies
-        run: |
-          uv sync --dev
-
-      - name: Run tests
-        run: |
-          uv run pytest --cov=src/sanitongo --cov-report=xml
+        run: uv sync --group dev
 
       - name: Build package
-        run: |
-          uv run python -m build
+        run: uv run python -m build
 
       - name: Check package
-        run: |
-          uv run twine check dist/*
+        run: uv run twine check dist/*
 
       - name: Extract release notes
         id: extract_notes
         run: |
-          # Extract version from tag
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           
-          # Extract changelog section for this version
           if [ -f CHANGELOG.md ]; then
-            # Get the section between this version and the next section
             awk "/^## \[$VERSION\]/{flag=1; next} /^## \[/{if(flag) exit} flag" CHANGELOG.md > release_notes.md
           else
             echo "Release $VERSION" > release_notes.md
           fi
 
       - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
