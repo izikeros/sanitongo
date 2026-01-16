@@ -79,11 +79,18 @@ sanitongo/
 
 ## Release Process
 
+One-command fully automated release:
+
 ```bash
-make release-patch  # 0.1.0 → 0.1.1
+make release-patch  # 0.1.0 → 0.1.1 (full release including GitHub release)
 make release-minor  # 0.1.0 → 0.2.0
 make release-major  # 0.1.0 → 1.0.0
 ```
+
+This runs tests, bumps version, updates changelog, commits, tags, pushes, and creates GitHub release.
+PyPI publication happens automatically via GitHub Actions.
+
+See [docs/RELEASE.md](docs/RELEASE.md) for full details.
 
 ## Changes in Python Version
 
