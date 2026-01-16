@@ -62,33 +62,6 @@ dependencies = [
     "typing-extensions>=4.0.0",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "pytest-mock>=3.10.0",
-    "pytest-watch>=4.2.0",
-    "pytest-benchmark>=4.0.0",
-    "ruff>=0.1.0",
-    "pre-commit>=3.0.0",
-    "bandit[toml]>=1.7.5",
-    "pip-audit>=2.6.0",
-    "build>=0.10.0",
-    "twine>=4.0.0",
-    "ty>=0.0.1a23",
-]
-docs = [
-    "mkdocs>=1.5.0",
-    "mkdocs-material>=9.0.0",
-    "mkdocstrings[python]>=0.20.0",
-]
-test = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "pytest-mock>=3.10.0",
-    "pymongo>=4.0.0",  # For integration testing
-]
-
 [project.urls]
 Homepage = "https://github.com/izikeros/sanitongo"
 Documentation = "https://izikeros.github.io/sanitongo"
