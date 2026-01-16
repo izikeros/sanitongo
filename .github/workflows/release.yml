@@ -1,4 +1,4 @@
-name: Release
+name: Publish to PyPI
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - 'v*'
 
 permissions:
-  contents: write
+  contents: read
   id-token: write
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     
     steps:
@@ -36,30 +36,6 @@ jobs:
 
       - name: Check package
         run: uv run twine check dist/*
-
-      - name: Extract release notes
-        id: extract_notes
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          
-          if [ -f CHANGELOG.md ]; then
-            awk "/^## \[$VERSION\]/{flag=1; next} /^## \[/{if(flag) exit} flag" CHANGELOG.md > release_notes.md
-          else
-            echo "Release $VERSION" > release_notes.md
-          fi
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ steps.extract_notes.outputs.version }}
-          body_path: release_notes.md
-          draft: false
-          prerelease: false
-          files: dist/*
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
