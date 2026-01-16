@@ -32,11 +32,12 @@ help:
 	@echo "  make docs             Generate documentation"
 	@echo ""
 	@echo "Release Management:"
-	@echo "  make release-patch    Bump patch version and prepare release"
-	@echo "  make release-minor    Bump minor version and prepare release"
-	@echo "  make release-major    Bump major version and prepare release"
+	@echo "  make release-patch    Full release: test, bump, changelog, commit, tag, push, GitHub release"
+	@echo "  make release-minor    Full release: test, bump, changelog, commit, tag, push, GitHub release"
+	@echo "  make release-major    Full release: test, bump, changelog, commit, tag, push, GitHub release"
 	@echo "  make update-changelog Generate/update changelog with git-cliff"
 	@echo "  make show-version     Show current version"
+	@echo "  make preview-release-notes  Preview release notes for current version"
 	@echo ""
 	@echo "Docker:"
 	@echo "  make docker-build     Build Docker image"
@@ -154,7 +155,7 @@ benchmark:
 profile:
 	uv run python -m cProfile -s cumulative -m pytest tests/test_sanitizer.py
 
-# Release helpers
+# Release helpers (version bump only, no commit/tag)
 version-patch:
 	uv run bump-my-version bump patch
 
@@ -164,36 +165,64 @@ version-minor:
 version-major:
 	uv run bump-my-version bump major
 
-# Release targets
-release-patch: clean test-cov security-check lint
-	uv run bump-my-version bump patch
-	$(MAKE) update-changelog
-	git add -A
-	git commit -m "chore(release): bump version to $$(uv run bump-my-version show current_version)"
-	git tag "v$$(uv run bump-my-version show current_version)"
-	@echo "Release prepared! Push with: git push origin main --tags"
+# Fully automated release targets
+# Usage: make release-patch (or release-minor, release-major)
+# This will: test, bump version, update changelog, commit, tag, push, create GitHub release
+release-patch:
+	@$(MAKE) _do-release BUMP=patch
 
-release-minor: clean test-cov security-check lint
-	uv run bump-my-version bump minor
-	$(MAKE) update-changelog
-	git add -A
-	git commit -m "chore(release): bump version to $$(uv run bump-my-version show current_version)"
-	git tag "v$$(uv run bump-my-version show current_version)"
-	@echo "Release prepared! Push with: git push origin main --tags"
+release-minor:
+	@$(MAKE) _do-release BUMP=minor
 
-release-major: clean test-cov security-check lint
-	uv run bump-my-version bump major
+release-major:
+	@$(MAKE) _do-release BUMP=major
+
+# Internal release target - do not call directly
+_do-release: clean test-cov security-check lint
+	@echo "🚀 Starting release process ($(BUMP))..."
+	uv run bump-my-version bump $(BUMP)
+	@echo "📝 Updating changelog..."
 	$(MAKE) update-changelog
+	@echo "📋 Extracting release notes..."
+	$(MAKE) _extract-release-notes
+	@echo "💾 Committing changes..."
 	git add -A
 	git commit -m "chore(release): bump version to $$(uv run bump-my-version show current_version)"
+	@echo "🏷️  Creating tag..."
 	git tag "v$$(uv run bump-my-version show current_version)"
-	@echo "Release prepared! Push with: git push origin main --tags"
+	@echo "⬆️  Pushing to origin..."
+	git push origin main --tags
+	@echo "📦 Creating GitHub release..."
+	gh release create "v$$(uv run bump-my-version show current_version)" \
+		--title "Release $$(uv run bump-my-version show current_version)" \
+		--notes-file release_notes.md \
+		--latest
+	@rm -f release_notes.md
+	@echo ""
+	@echo "✅ Release v$$(uv run bump-my-version show current_version) complete!"
+	@echo "📦 PyPI publication will happen automatically via GitHub Actions."
+	@echo "🔗 Monitor: https://github.com/izikeros/sanitongo/actions"
+
+# Extract release notes for current version from CHANGELOG.md
+_extract-release-notes:
+	@VERSION=$$(uv run bump-my-version show current_version); \
+	awk "/^## \[$$VERSION\]/{flag=1; next} /^## \[/{if(flag) exit} flag" CHANGELOG.md > release_notes.md; \
+	if [ ! -s release_notes.md ]; then \
+		echo "Release $$VERSION" > release_notes.md; \
+	fi
 
 update-changelog:
 	uv run git-cliff --output CHANGELOG.md
 
 show-version:
 	@uv run bump-my-version show current_version
+
+# Preview release notes without making changes
+preview-release-notes:
+	@VERSION=$$(uv run bump-my-version show current_version); \
+	echo "Release notes for v$$VERSION:"; \
+	echo "---"; \
+	awk "/^## \[$$VERSION\]/{flag=1; next} /^## \[/{if(flag) exit} flag" CHANGELOG.md
 
 # Environment info
 env-info:
