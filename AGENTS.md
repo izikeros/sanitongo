@@ -84,3 +84,31 @@ make release-patch  # 0.1.0 → 0.1.1
 make release-minor  # 0.1.0 → 0.2.0
 make release-major  # 0.1.0 → 1.0.0
 ```
+
+## Changes in Python Version
+
+When changing the Python version in `pyproject.toml`, ensure to also update:
+- the python version in the GitHub workflows located in `.github/workflows/`
+- target python version in ruff.toml located in the project root
+
+## GitHub Workflows
+
+The project has four workflows in `.github/workflows/`:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ci.yml` | push/PR to main/develop | Tests, linting, type checking |
+| `security.yml` | push to main, PRs, weekly schedule | Security scans (bandit, pip-audit) |
+| `docs.yml` | push to main | Build and deploy documentation |
+| `release.yml` | tag push (v*) | Build and publish to PyPI |
+
+All workflows use `uv` with caching enabled for faster builds.
+
+## Documentation
+
+When creating or updating documentation, ensure to:
+- keep the documentation in the `docs/` folder up to date.
+- if applicable, update the `README.md` file in the project root.
+- for the mkdocs based documentation, ensure that:
+    - it contains my real name: Krystian Safjan
+    - links to my personal website: https://safjan.com
