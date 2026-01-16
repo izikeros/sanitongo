@@ -52,7 +52,7 @@ jobs:
 
       - name: Check dependencies with safety
         run: |
-          uv run safety check --json
+          uv run safety scan --json
 
       - name: Run tests with pytest
         run: |
@@ -91,7 +91,7 @@ jobs:
       - name: Run additional security scans
         run: |
           uv run bandit -r src/ -ll
-          uv run safety check
+          uv run safety scan
 
   build:
     runs-on: ubuntu-latest
