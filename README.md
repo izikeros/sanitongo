@@ -2,7 +2,7 @@
 
 > Modern MongoDB Query Sanitizer with Layered Security Protection
 
-[![CI/CD Pipeline](https://github.com/izikeros/sanitongo/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/izikeros/sanitongo/actions)
+[![CI Pipeline](https://github.com/izikeros/sanitongo/workflows/CI%20Pipeline/badge.svg)](https://github.com/izikeros/sanitongo/actions)
 [![codecov](https://codecov.io/gh/izikeros/sanitongo/branch/main/graph/badge.svg)](https://codecov.io/gh/izikeros/sanitongo)
 [![PyPI version](https://badge.fury.io/py/sanitongo.svg)](https://badge.fury.io/py/sanitongo)
 [![Python versions](https://img.shields.io/pypi/pyversions/sanitongo.svg)](https://pypi.org/project/sanitongo/)
@@ -45,22 +45,30 @@ Sanitongo is a comprehensive security library for sanitizing MongoDB queries wit
 pip install sanitongo
 ```
 
-For development with all dependencies:
+Or using uv:
 
 ```bash
-pip install "sanitongo[dev]"
+uv add sanitongo
+```
+
+### Development Installation
+
+```bash
+git clone https://github.com/izikeros/sanitongo.git
+cd sanitongo
+uv sync --group dev
 ```
 
 For documentation building:
 
 ```bash
-pip install "sanitongo[docs]"
+uv sync --group docs
 ```
 
 For testing (includes MongoDB integration tests):
 
 ```bash
-pip install "sanitongo[test]"
+uv sync --group test
 ```
 
 ## Quick Start
@@ -362,11 +370,11 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 git clone https://github.com/izikeros/sanitongo.git
 cd sanitongo
 
-# Install in development mode
-pip install -e ".[dev]"
+# Install development dependencies
+uv sync --group dev
 
 # Install pre-commit hooks
-pre-commit install
+uv run pre-commit install
 
 # Run tests
 make test
