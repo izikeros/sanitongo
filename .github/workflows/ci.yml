@@ -50,9 +50,10 @@ jobs:
         run: |
           uv run bandit -r src/ -f json
 
-      - name: Check dependencies with safety
+      - name: Check dependencies with pip-audit
         run: |
-          uv run safety scan --json
+          uv pip install pip-audit
+          uv run pip-audit
 
       - name: Run tests with pytest
         run: |
@@ -91,7 +92,7 @@ jobs:
       - name: Run additional security scans
         run: |
           uv run bandit -r src/ -ll
-          uv run safety scan
+          uv pip install pip-audit && uv run pip-audit
 
   build:
     runs-on: ubuntu-latest
