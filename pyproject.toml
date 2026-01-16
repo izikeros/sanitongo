@@ -30,7 +30,7 @@ test = [
 
 [project]
 name = "sanitongo"
-version = "0.1.2"
+version = "0.1.3"
 description = "Modern MongoDB query sanitizer with layered security protection"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -81,7 +81,7 @@ include = [
 ]
 
 [tool.bumpversion]
-current_version = "0.1.2"
+current_version = "0.1.3"
 commit = false
 tag = false
 allow_dirty = false

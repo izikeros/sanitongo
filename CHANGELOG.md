@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### 🐛 Bug Fixes
+
+- Update dependency group for documentation build
+- Update safety command from 'check' to 'scan' in CI workflow
+- Update safety command from 'check' to 'scan' in security workflow
+- Replace safety with pip-audit in security checks and update dependencies
+- Replace safety with pip-audit for dependency checks in CI workflow
+- Update CI workflows to use latest actions and improve caching
+- Update security-check command in Makefile to use pip-audit
+- Revert target Python version to 3.10 in ruff.toml
+
+### ⚙️ Miscellaneous Tasks
+
+- Update changelog for version 0.1.2 release
+- Update uv.lock
+
 ## [0.1.2] - 2026-01-15
 
 ### 🚀 Features
