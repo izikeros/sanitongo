@@ -43,3 +43,7 @@ else:
 - [API Reference](api.md) - Full API documentation
 - [GitHub Repository](https://github.com/izikeros/sanitongo)
 - [PyPI Package](https://pypi.org/project/sanitongo/)
+
+## Author
+
+Created by [Krystian Safjan](https://safjan.com)
