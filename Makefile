@@ -86,7 +86,7 @@ type-check:
 
 security-check:
 	uv run bandit -r src/ -f json
-	uv run safety scan --json
+	uv pip install pip-audit && uv run pip-audit
 
 pre-commit:
 	uv run pre-commit run --all-files
