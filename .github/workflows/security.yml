@@ -28,7 +28,7 @@ jobs:
         continue-on-error: true
 
       - name: Run safety check
-        run: uv run safety check
+        run: uv run safety scan
         continue-on-error: true
 
       - name: Run pip-audit
