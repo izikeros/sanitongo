@@ -118,8 +118,15 @@ publish-test: build
 
 # Documentation
 docs:
-	@echo "Generating documentation..."
-	@echo "API documentation would be generated here"
+	uv sync --group docs
+	uv run mkdocs build
+
+serve-docs:
+	uv sync --group docs
+	uv run mkdocs serve
+
+commit:
+	uv run cz commit
 
 # Docker
 docker-build:
