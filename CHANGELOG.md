@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* Update changelog for version 0.1.3 release
+- *(release)* Update workflow to publish directly to PyPI and remove GitHub release steps
+- Remove outdated release documentation and consolidate into a single guide
+- Update uv lock
+- Ignore safety-project.ini
+- Remove
+
 ## [0.1.3] - 2026-01-16
 
 ### 🐛 Bug Fixes
